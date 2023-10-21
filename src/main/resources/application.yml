@@ -1,0 +1,5 @@
+
+jwt:
+  issuer: clova
+  expiry-seconds: 3600
+  secret: E$22EAGK23Hwh{`n4(FbQ;IGyq#*0j&,i}3})tk<jdYJT0S}z3`GfN$Za+]KQe9
