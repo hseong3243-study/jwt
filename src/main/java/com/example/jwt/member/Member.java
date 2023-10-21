@@ -1,4 +1,4 @@
-package com.example.member;
+package com.example.jwt.member;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
