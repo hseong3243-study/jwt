@@ -1,13 +1,19 @@
 package com.example.jwt.auth.jwt;
 
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import javax.crypto.SecretKey;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class JJwtProvider implements JwtProvider {
 
@@ -16,7 +22,8 @@ public class JJwtProvider implements JwtProvider {
 
     private final String issuer;
     private final int expirySeconds;
-    private final String secret;
+    private final SecretKey secretKey;
+    private final JwtParser jwtParser;
 
     public JJwtProvider(
         @Value("${jwt.issuer}") String issuer,
@@ -24,7 +31,10 @@ public class JJwtProvider implements JwtProvider {
         @Value("${jwt.secret}") String secret) {
         this.issuer = issuer;
         this.expirySeconds = expirySeconds;
-        this.secret = secret;
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.jwtParser = Jwts.parser()
+            .verifyWith(secretKey)
+            .build();
     }
 
     @Override
@@ -37,7 +47,20 @@ public class JJwtProvider implements JwtProvider {
             .expiration(expiresAt)
             .claim(MEMBER_ID, command.memberId())
             .claim(ROLE, command.memberRole().getValue())
-            .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
+            .signWith(secretKey)
             .compact();
+    }
+
+    @Override
+    public void validateToken(String token) {
+        try {
+            jwtParser.parseSignedClaims(token);
+        } catch (ExpiredJwtException ex) {
+            log.info("[EX] {}: 만료된 JWT입니다.", ex.getClass().getSimpleName());
+            throw new IllegalArgumentException("만료된 JWT입니다.");
+        } catch (JwtException ex) {
+            log.info("[EX] {}: 잘못된 JWT입니다.", ex.getClass().getSimpleName());
+            throw new IllegalArgumentException("유효하지 않은 JWT입니다.");
+        }
     }
 }
