@@ -1,6 +1,9 @@
 package com.example.jwt.auth.jwt;
 
+import com.example.jwt.auth.MemberRole;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
+import com.example.jwt.auth.jwt.response.CustomClaims;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
@@ -8,6 +11,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,15 +56,18 @@ public class JJwtProvider implements JwtProvider {
     }
 
     @Override
-    public void validateToken(String token) {
+    public CustomClaims parseToken(String token) {
         try {
-            jwtParser.parseSignedClaims(token);
+            Claims claims = jwtParser.parseSignedClaims(token).getPayload();
+            Long memberId = claims.get(MEMBER_ID, Long.class);
+            String memberRole = claims.get(ROLE, String.class);
+            List<String> authorities = MemberRole.valueOf(memberRole).getAuthorities();
+            return CustomClaims.of(memberId, authorities);
         } catch (ExpiredJwtException ex) {
             log.info("[EX] {}: 만료된 JWT입니다.", ex.getClass().getSimpleName());
-            throw new IllegalArgumentException("만료된 JWT입니다.");
         } catch (JwtException ex) {
             log.info("[EX] {}: 잘못된 JWT입니다.", ex.getClass().getSimpleName());
-            throw new IllegalArgumentException("유효하지 않은 JWT입니다.");
         }
+        throw new IllegalArgumentException("유효하지 않은 JWT입니다.");
     }
 }

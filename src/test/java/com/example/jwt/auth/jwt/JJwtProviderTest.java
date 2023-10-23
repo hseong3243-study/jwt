@@ -1,11 +1,12 @@
 package com.example.jwt.auth.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.jwt.auth.MemberRole;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
+import com.example.jwt.auth.jwt.response.CustomClaims;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class JJwtProviderTest {
         @DisplayName("성공")
         void success() {
             //given
-            CreateTokenCommand command = new CreateTokenCommand(1L, MemberRole.USER);
+            CreateTokenCommand command = new CreateTokenCommand(1L, MemberRole.ROLE_USER);
 
             //when
             String token = jJwtProvider.createToken(command);
@@ -39,7 +40,7 @@ class JJwtProviderTest {
     @DisplayName("validateToken 메서드 실행 시")
     class ValidateTokenTest {
 
-        CreateTokenCommand command = new CreateTokenCommand(1L, MemberRole.USER);
+        CreateTokenCommand command = new CreateTokenCommand(1L, MemberRole.ROLE_USER);
         String accessToken = jJwtProvider.createToken(command);
 
         @Test
@@ -47,9 +48,14 @@ class JJwtProviderTest {
         void success() {
             //given
             //when
+            CustomClaims claims = jJwtProvider.parseToken(accessToken);
+
             //then
-            assertThatCode(() -> jJwtProvider.validateToken(accessToken))
-                .doesNotThrowAnyException();
+            Long memberId = claims.memberId();
+            List<String> authorities = claims.authorities();
+            assertThat(memberId).isEqualTo(command.memberId());
+            assertThat(authorities).containsExactlyElementsOf(
+                command.memberRole().getAuthorities());
         }
 
         @Test
@@ -63,7 +69,7 @@ class JJwtProviderTest {
 
             //when
             //then
-            assertThatThrownBy(() -> jJwtProvider.validateToken(invalidAccessToken))
+            assertThatThrownBy(() -> jJwtProvider.parseToken(invalidAccessToken))
                 .isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -77,7 +83,7 @@ class JJwtProviderTest {
 
             //when
             //then
-            assertThatThrownBy(() -> jJwtProvider.validateToken(expiredAccessToken))
+            assertThatThrownBy(() -> jJwtProvider.parseToken(expiredAccessToken))
                 .isInstanceOf(IllegalArgumentException.class);
         }
     }
