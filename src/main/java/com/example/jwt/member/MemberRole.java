@@ -1,4 +1,4 @@
-package com.example.jwt.auth;
+package com.example.jwt.member;
 
 import java.util.List;
 import lombok.Getter;

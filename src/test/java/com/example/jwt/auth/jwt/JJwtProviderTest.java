@@ -3,7 +3,7 @@ package com.example.jwt.auth.jwt;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.jwt.auth.MemberRole;
+import com.example.jwt.member.MemberRole;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
 import com.example.jwt.auth.jwt.response.CustomClaims;
 import java.util.List;
