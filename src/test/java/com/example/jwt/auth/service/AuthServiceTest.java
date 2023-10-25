@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -62,6 +63,8 @@ class AuthServiceTest {
         @DisplayName("성공")
         void success() {
             //given
+            ReflectionTestUtils.setField(member, "memberId", 1L);
+
             given(memberRepository.findByUsername(any())).willReturn(Optional.ofNullable(member));
 
             //when

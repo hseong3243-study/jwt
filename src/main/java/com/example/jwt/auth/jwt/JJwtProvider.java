@@ -20,8 +20,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class JJwtProvider implements JwtProvider {
-
-    private static final String MEMBER_ID = "memberId";
+    
     private static final String ROLE = "role";
 
     private final String issuer;
@@ -48,8 +47,8 @@ public class JJwtProvider implements JwtProvider {
         return Jwts.builder()
             .issuer(issuer)
             .issuedAt(now)
+            .subject(command.memberId().toString())
             .expiration(expiresAt)
-            .claim(MEMBER_ID, command.memberId())
             .claim(ROLE, command.memberRole().getValue())
             .signWith(secretKey)
             .compact();
@@ -59,7 +58,7 @@ public class JJwtProvider implements JwtProvider {
     public CustomClaims parseToken(String token) {
         try {
             Claims claims = jwtParser.parseSignedClaims(token).getPayload();
-            Long memberId = claims.get(MEMBER_ID, Long.class);
+            Long memberId = Long.valueOf(claims.getSubject());
             String memberRole = claims.get(ROLE, String.class);
             List<String> authorities = MemberRole.valueOf(memberRole).getAuthorities();
             return CustomClaims.of(memberId, authorities);
