@@ -4,12 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import com.example.jwt.auth.jwt.JJwtProvider;
 import com.example.jwt.auth.jwt.JwtProvider;
 import com.example.jwt.auth.service.request.LoginCommand;
 import com.example.jwt.auth.service.response.LoginResponse;
 import com.example.jwt.member.Member;
 import com.example.jwt.member.repository.MemberRepository;
+import com.example.jwt.support.AuthFixture;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,11 +24,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
-
-    String issuer = "issuer";
-    int expirySeconds = 1000;
-    String secret = "}:ASV~lS,%!I:ba^GBR<Q@cJN~!,Y0=zx7Rqwum+remZ>ayhI3$4dX$jx~@9[1F";
-    JJwtProvider jJwtProvider = new JJwtProvider(issuer, expirySeconds, secret);
 
     @Mock
     MemberRepository memberRepository;
@@ -50,7 +45,7 @@ class AuthServiceTest {
     };
 
     @Spy
-    JwtProvider jwtProvider = new JJwtProvider(issuer, expirySeconds, secret);
+    JwtProvider jwtProvider = AuthFixture.jwtProvider();
 
     @Nested
     @DisplayName("login 메서드 실행 시")

@@ -29,7 +29,7 @@ class AuthControllerTest extends BaseControllerTest {
         @DisplayName("성공")
         void login() throws Exception {
             //given
-            LoginResponse response = new LoginResponse("accessToken");
+            LoginResponse response = new LoginResponse("accessToken", "refreshToken");
             given(authService.login(any())).willReturn(response);
 
             //when

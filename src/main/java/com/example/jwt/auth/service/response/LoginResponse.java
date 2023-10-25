@@ -1,8 +1,10 @@
 package com.example.jwt.auth.service.response;
 
-public record LoginResponse(String accessToken) {
+import com.example.jwt.auth.jwt.MemberToken;
 
-    public static LoginResponse from(String accessToken) {
-        return new LoginResponse(accessToken);
+public record LoginResponse(String accessToken, String refreshToken) {
+
+    public static LoginResponse from(MemberToken memberToken) {
+        return new LoginResponse(memberToken.accessToken(), memberToken.refreshToken());
     }
 }

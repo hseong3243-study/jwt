@@ -3,6 +3,7 @@ package com.example.jwt.auth.service;
 import static com.example.jwt.member.MemberRole.ROLE_USER;
 
 import com.example.jwt.auth.jwt.JwtProvider;
+import com.example.jwt.auth.jwt.MemberToken;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
 import com.example.jwt.auth.service.request.LoginCommand;
 import com.example.jwt.auth.service.response.LoginResponse;
@@ -26,8 +27,8 @@ public class AuthService {
         matchesPassword(command.password(), member.getPassword());
         CreateTokenCommand createTokenCommand = CreateTokenCommand.of(member.getMemberId(),
             ROLE_USER);
-        String accessToken = jwtProvider.createToken(createTokenCommand);
-        return LoginResponse.from(accessToken);
+        MemberToken memberToken = jwtProvider.createToken(createTokenCommand);
+        return LoginResponse.from(memberToken);
     }
 
     private void matchesPassword(String rawPassword, String encodedPassword) {

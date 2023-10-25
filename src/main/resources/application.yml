@@ -3,3 +3,5 @@ jwt:
   issuer: clova
   expiry-seconds: 3600
   secret: E$22EAGK23Hwh{`n4(FbQ;IGyq#*0j&,i}3})tk<jdYJT0S}z3`GfN$Za+]KQe9
+  refresh-expiry-seconds: 18000
+  refresh-secret: fuE8C~X;+;ll)LuIePZl<Xd4S7(mGZf,{Y%Loh_e,&Po)yyjn^SR5+Jl!RH|{VX

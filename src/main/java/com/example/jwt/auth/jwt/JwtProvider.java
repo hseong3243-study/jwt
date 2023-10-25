@@ -5,7 +5,7 @@ import com.example.jwt.auth.jwt.response.CustomClaims;
 
 public interface JwtProvider {
 
-    String createToken(CreateTokenCommand command);
+    MemberToken createToken(CreateTokenCommand command);
 
     CustomClaims parseToken(String token);
 }

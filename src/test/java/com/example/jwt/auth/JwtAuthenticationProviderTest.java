@@ -3,6 +3,7 @@ package com.example.jwt.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.example.jwt.auth.jwt.JwtProvider;
+import com.example.jwt.auth.jwt.MemberToken;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
 import com.example.jwt.member.MemberRole;
 import com.example.jwt.support.AuthFixture;
@@ -27,10 +28,11 @@ class JwtAuthenticationProviderTest {
         void authenticate() {
             //given
             CreateTokenCommand command = new CreateTokenCommand(1L, MemberRole.ROLE_USER);
-            String accessToken = jwtProvider.createToken(command);
+            MemberToken memberToken = jwtProvider.createToken(command);
 
             //when
-            Authentication authentication = authenticationProvider.authenticate(accessToken);
+            Authentication authentication = authenticationProvider.authenticate(
+                memberToken.accessToken());
 
             //then
             Object principal = authentication.getPrincipal();

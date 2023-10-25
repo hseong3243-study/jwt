@@ -20,37 +20,64 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class JJwtProvider implements JwtProvider {
-    
+
     private static final String ROLE = "role";
 
     private final String issuer;
     private final int expirySeconds;
+    private final int refreshExpirySeconds;
     private final SecretKey secretKey;
+    private final SecretKey refreshSecretKey;
     private final JwtParser jwtParser;
 
     public JJwtProvider(
         @Value("${jwt.issuer}") String issuer,
         @Value("${jwt.expiry-seconds}") int expirySeconds,
-        @Value("${jwt.secret}") String secret) {
+        @Value("${jwt.refresh-expiry-seconds}") int refreshExpirySeconds,
+        @Value("${jwt.secret}") String secret,
+        @Value("${jwt.refresh-secret}") String refreshSecret) {
         this.issuer = issuer;
         this.expirySeconds = expirySeconds;
+        this.refreshExpirySeconds = refreshExpirySeconds;
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.refreshSecretKey = Keys.hmacShaKeyFor(refreshSecret.getBytes(StandardCharsets.UTF_8));
         this.jwtParser = Jwts.parser()
             .verifyWith(secretKey)
             .build();
     }
 
     @Override
-    public String createToken(CreateTokenCommand command) {
+    public MemberToken createToken(CreateTokenCommand command) {
+        Long memberId = command.memberId();
+        MemberRole memberRole = command.memberRole();
+        String accessToken = createAccessToken(memberId, memberRole);
+        String refreshToken = createRefreshToken(memberId, memberRole);
+        return MemberToken.of(accessToken, refreshToken);
+    }
+
+    private String createAccessToken(Long memberId, MemberRole memberRole) {
         Date now = new Date();
         Date expiresAt = new Date(now.getTime() + expirySeconds * 1000L);
         return Jwts.builder()
             .issuer(issuer)
             .issuedAt(now)
-            .subject(command.memberId().toString())
+            .subject(memberId.toString())
             .expiration(expiresAt)
-            .claim(ROLE, command.memberRole().getValue())
+            .claim(ROLE, memberRole.getValue())
             .signWith(secretKey)
+            .compact();
+    }
+
+    private String createRefreshToken(Long memberId, MemberRole memberRole) {
+        Date now = new Date();
+        Date expiresAt = new Date(now.getTime() + refreshExpirySeconds * 1000L);
+        return Jwts.builder()
+            .issuer(issuer)
+            .issuedAt(now)
+            .subject(memberId.toString())
+            .expiration(expiresAt)
+            .claim(ROLE, memberRole.getValue())
+            .signWith(refreshSecretKey)
             .compact();
     }
 

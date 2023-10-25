@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 
 import com.example.jwt.auth.jwt.JwtProvider;
+import com.example.jwt.auth.jwt.MemberToken;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
 import com.example.jwt.member.MemberRole;
 import com.example.jwt.support.AuthFixture;
@@ -57,7 +58,8 @@ class JwtAuthenticationFilterTest {
         void doFilterWhenContainsToken() throws ServletException, IOException {
             //given
             CreateTokenCommand command = new CreateTokenCommand(1L, MemberRole.ROLE_USER);
-            String accessToken = jwtProvider.createToken(command);
+            MemberToken memberToken = jwtProvider.createToken(command);
+            String accessToken = memberToken.accessToken();
             mockRequest.addHeader("Authorization", accessToken);
 
             //when
