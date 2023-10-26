@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import com.example.jwt.auth.jwt.JwtProvider;
+import com.example.jwt.auth.repository.RefreshTokenRepository;
 import com.example.jwt.auth.service.request.LoginCommand;
 import com.example.jwt.auth.service.response.LoginResponse;
 import com.example.jwt.member.Member;
@@ -29,6 +30,9 @@ class AuthServiceTest {
 
     @Mock
     MemberRepository memberRepository;
+
+    @Mock
+    RefreshTokenRepository refreshTokenRepository;
 
     @InjectMocks
     AuthService authService;
@@ -72,6 +76,20 @@ class AuthServiceTest {
 
             //then
             assertThat(response.accessToken()).isNotBlank();
+            assertThat(response.refreshToken()).isNotBlank();
+        }
+
+        @Test
+        @DisplayName("성공: 리프레시 토큰 저장됨")
+        void saveRefreshToken() {
+            //given
+            given(memberRepository.findByUsername(any())).willReturn(Optional.ofNullable(member));
+
+            //when
+            LoginResponse response = authService.login(loginCommand);
+
+            //then
+            then(refreshTokenRepository).should().save(any());
         }
     }
 }

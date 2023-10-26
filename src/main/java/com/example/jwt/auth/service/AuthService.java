@@ -2,9 +2,11 @@ package com.example.jwt.auth.service;
 
 import static com.example.jwt.member.MemberRole.ROLE_USER;
 
+import com.example.jwt.auth.RefreshToken;
 import com.example.jwt.auth.jwt.JwtProvider;
 import com.example.jwt.auth.jwt.response.MemberToken;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
+import com.example.jwt.auth.repository.RefreshTokenRepository;
 import com.example.jwt.auth.service.request.LoginCommand;
 import com.example.jwt.auth.service.response.LoginResponse;
 import com.example.jwt.member.Member;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
@@ -28,6 +31,7 @@ public class AuthService {
         CreateTokenCommand createTokenCommand = CreateTokenCommand.of(member.getMemberId(),
             ROLE_USER);
         MemberToken memberToken = jwtProvider.createToken(createTokenCommand);
+        refreshTokenRepository.save(new RefreshToken(memberToken.refreshToken()));
         return LoginResponse.from(memberToken);
     }
 
