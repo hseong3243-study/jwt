@@ -29,7 +29,9 @@ public class JJwtProvider implements JwtProvider {
     private final int refreshExpirySeconds;
     private final SecretKey secretKey;
     private final SecretKey refreshSecretKey;
-    private final JwtParser jwtParser;
+    private final JwtParser accessTokenParser;
+    private final JwtParser refreshTokenParser;
+
 
     public JJwtProvider(
         @Value("${jwt.issuer}") String issuer,
@@ -42,8 +44,11 @@ public class JJwtProvider implements JwtProvider {
         this.refreshExpirySeconds = refreshExpirySeconds;
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.refreshSecretKey = Keys.hmacShaKeyFor(refreshSecret.getBytes(StandardCharsets.UTF_8));
-        this.jwtParser = Jwts.parser()
+        this.accessTokenParser = Jwts.parser()
             .verifyWith(secretKey)
+            .build();
+        this.refreshTokenParser = Jwts.parser()
+            .verifyWith(refreshSecretKey)
             .build();
     }
 
@@ -83,9 +88,9 @@ public class JJwtProvider implements JwtProvider {
     }
 
     @Override
-    public CustomClaims parseToken(String token) {
+    public CustomClaims parseAccessToken(String token) {
         try {
-            Claims claims = jwtParser.parseSignedClaims(token).getPayload();
+            Claims claims = accessTokenParser.parseSignedClaims(token).getPayload();
             Long memberId = Long.valueOf(claims.getSubject());
             String memberRole = claims.get(ROLE, String.class);
             List<String> authorities = MemberRole.valueOf(memberRole).getAuthorities();
@@ -96,5 +101,21 @@ public class JJwtProvider implements JwtProvider {
             log.info("[EX] {}: 잘못된 JWT입니다.", ex.getClass().getSimpleName());
         }
         throw new IllegalArgumentException("유효하지 않은 JWT입니다.");
+    }
+
+    @Override
+    public MemberToken refreshAccessToken(String refreshToken) {
+        try {
+            Claims claims = refreshTokenParser.parseSignedClaims(refreshToken).getPayload();
+            Long memberId = Long.valueOf(claims.getSubject());
+            MemberRole memberRole = MemberRole.valueOf(claims.get(ROLE, String.class));
+            CreateTokenCommand command = CreateTokenCommand.of(memberId, memberRole);
+            return createToken(command);
+        } catch (ExpiredJwtException ex) {
+            log.info("[EX] {}: 만료된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
+        } catch (JwtException ex) {
+            log.info("[EX] {}: 잘못된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
+        }
+        throw new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다.");
     }
 }

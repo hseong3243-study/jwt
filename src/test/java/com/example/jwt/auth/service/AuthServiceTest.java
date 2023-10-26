@@ -8,7 +8,7 @@ import static org.mockito.BDDMockito.then;
 import com.example.jwt.auth.jwt.JwtProvider;
 import com.example.jwt.auth.repository.RefreshTokenRepository;
 import com.example.jwt.auth.service.request.LoginCommand;
-import com.example.jwt.auth.service.response.LoginResponse;
+import com.example.jwt.auth.service.response.TokenResponse;
 import com.example.jwt.member.Member;
 import com.example.jwt.member.repository.MemberRepository;
 import com.example.jwt.support.AuthFixture;
@@ -72,7 +72,7 @@ class AuthServiceTest {
             given(memberRepository.findByUsername(any())).willReturn(Optional.ofNullable(member));
 
             //when
-            LoginResponse response = authService.login(loginCommand);
+            TokenResponse response = authService.login(loginCommand);
 
             //then
             assertThat(response.accessToken()).isNotBlank();
@@ -86,7 +86,7 @@ class AuthServiceTest {
             given(memberRepository.findByUsername(any())).willReturn(Optional.ofNullable(member));
 
             //when
-            LoginResponse response = authService.login(loginCommand);
+            TokenResponse response = authService.login(loginCommand);
 
             //then
             then(refreshTokenRepository).should().save(any());

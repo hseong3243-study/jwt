@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.jwt.auth.service.response.LoginResponse;
+import com.example.jwt.auth.service.response.TokenResponse;
 import com.example.jwt.base.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,7 +29,7 @@ class AuthControllerTest extends BaseControllerTest {
         @DisplayName("성공")
         void login() throws Exception {
             //given
-            LoginResponse response = new LoginResponse("accessToken", "refreshToken");
+            TokenResponse response = new TokenResponse("accessToken", "refreshToken");
             given(authService.login(any())).willReturn(response);
 
             //when

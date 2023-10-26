@@ -8,5 +8,7 @@ public interface JwtProvider {
 
     MemberToken createToken(CreateTokenCommand command);
 
-    CustomClaims parseToken(String token);
+    CustomClaims parseAccessToken(String token);
+
+    MemberToken refreshAccessToken(String refreshToken);
 }

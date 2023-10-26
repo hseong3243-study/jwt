@@ -17,7 +17,7 @@ public class JwtAuthenticationProvider {
     private final JwtProvider jwtProvider;
 
     public Authentication authenticate(String accessToken) {
-        CustomClaims claims = jwtProvider.parseToken(accessToken);
+        CustomClaims claims = jwtProvider.parseAccessToken(accessToken);
         JwtAuthentication authentication = new JwtAuthentication(claims.memberId(), accessToken);
         List<GrantedAuthority> authorities = getAuthorities(claims.authorities());
         return UsernamePasswordAuthenticationToken.authenticated(authentication, accessToken,
