@@ -1,4 +1,4 @@
-package com.example.jwt.auth.jwt;
+package com.example.jwt.auth.jwt.response;
 
 public record MemberToken(String accessToken, String refreshToken) {
 

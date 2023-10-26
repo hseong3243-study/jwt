@@ -1,5 +1,6 @@
 package com.example.jwt.auth.jwt;
 
+import com.example.jwt.auth.jwt.response.MemberToken;
 import com.example.jwt.member.MemberRole;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
 import com.example.jwt.auth.jwt.response.CustomClaims;

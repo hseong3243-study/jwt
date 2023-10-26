@@ -2,8 +2,10 @@ package com.example.jwt.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.example.jwt.auth.authentication.JwtAuthentication;
+import com.example.jwt.auth.authentication.JwtAuthenticationProvider;
 import com.example.jwt.auth.jwt.JwtProvider;
-import com.example.jwt.auth.jwt.MemberToken;
+import com.example.jwt.auth.jwt.response.MemberToken;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
 import com.example.jwt.member.MemberRole;
 import com.example.jwt.support.AuthFixture;

@@ -1,6 +1,6 @@
 package com.example.jwt.auth.resolver;
 
-import com.example.jwt.auth.JwtAuthentication;
+import com.example.jwt.auth.authentication.JwtAuthentication;
 import java.util.Objects;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;

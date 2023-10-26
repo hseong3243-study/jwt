@@ -1,5 +1,6 @@
-package com.example.jwt.auth;
+package com.example.jwt.auth.filter;
 
+import com.example.jwt.auth.authentication.JwtAuthenticationProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.GenericFilter;
 import jakarta.servlet.ServletException;

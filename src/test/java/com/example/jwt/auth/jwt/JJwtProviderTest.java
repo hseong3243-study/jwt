@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
 import com.example.jwt.auth.jwt.response.CustomClaims;
+import com.example.jwt.auth.jwt.response.MemberToken;
 import com.example.jwt.member.MemberRole;
 import com.example.jwt.support.AuthFixture;
 import java.util.List;

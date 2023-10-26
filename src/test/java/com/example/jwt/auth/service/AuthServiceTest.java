@@ -3,6 +3,7 @@ package com.example.jwt.auth.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 import com.example.jwt.auth.jwt.JwtProvider;
 import com.example.jwt.auth.service.request.LoginCommand;
@@ -11,6 +12,7 @@ import com.example.jwt.member.Member;
 import com.example.jwt.member.repository.MemberRepository;
 import com.example.jwt.support.AuthFixture;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -54,12 +56,15 @@ class AuthServiceTest {
         LoginCommand loginCommand = new LoginCommand("username", "password");
         Member member = new Member(loginCommand.username(), loginCommand.password());
 
+        @BeforeEach
+        void setUp() {
+            ReflectionTestUtils.setField(member, "memberId", 1L);
+        }
+
         @Test
         @DisplayName("성공")
         void success() {
             //given
-            ReflectionTestUtils.setField(member, "memberId", 1L);
-
             given(memberRepository.findByUsername(any())).willReturn(Optional.ofNullable(member));
 
             //when

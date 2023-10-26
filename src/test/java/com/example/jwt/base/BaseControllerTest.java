@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import com.example.jwt.auth.JwtAuthenticationProvider;
+import com.example.jwt.auth.authentication.JwtAuthenticationProvider;
 import com.example.jwt.auth.jwt.JwtProvider;
 import com.example.jwt.auth.service.AuthService;
 import com.example.jwt.base.BaseControllerTest.WebMvcTestConfig;

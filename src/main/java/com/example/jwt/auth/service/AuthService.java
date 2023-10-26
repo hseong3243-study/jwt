@@ -3,7 +3,7 @@ package com.example.jwt.auth.service;
 import static com.example.jwt.member.MemberRole.ROLE_USER;
 
 import com.example.jwt.auth.jwt.JwtProvider;
-import com.example.jwt.auth.jwt.MemberToken;
+import com.example.jwt.auth.jwt.response.MemberToken;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
 import com.example.jwt.auth.service.request.LoginCommand;
 import com.example.jwt.auth.service.response.LoginResponse;

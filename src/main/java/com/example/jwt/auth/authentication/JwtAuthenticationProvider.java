@@ -1,4 +1,4 @@
-package com.example.jwt.auth;
+package com.example.jwt.auth.authentication;
 
 import com.example.jwt.auth.jwt.JwtProvider;
 import com.example.jwt.auth.jwt.response.CustomClaims;

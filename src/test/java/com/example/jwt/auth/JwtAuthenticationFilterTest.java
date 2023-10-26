@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 
+import com.example.jwt.auth.authentication.JwtAuthenticationProvider;
+import com.example.jwt.auth.filter.JwtAuthenticationFilter;
 import com.example.jwt.auth.jwt.JwtProvider;
-import com.example.jwt.auth.jwt.MemberToken;
+import com.example.jwt.auth.jwt.response.MemberToken;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
 import com.example.jwt.member.MemberRole;
 import com.example.jwt.support.AuthFixture;

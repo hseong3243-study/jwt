@@ -2,7 +2,7 @@ package com.example.jwt.support;
 
 import com.example.jwt.auth.jwt.JJwtProvider;
 import com.example.jwt.auth.jwt.JwtProvider;
-import com.example.jwt.auth.jwt.MemberToken;
+import com.example.jwt.auth.jwt.response.MemberToken;
 import com.example.jwt.auth.jwt.request.CreateTokenCommand;
 import com.example.jwt.member.MemberRole;
 
